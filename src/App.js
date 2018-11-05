@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import { Map, ImageOverlay } from 'react-leaflet'
 import HeatmapLayer from 'react-leaflet-heatmap-layer'
+import AsyncSelect from 'react-select/lib/Async'
+import { Chart, Axis, Series, Tooltip, Cursor, Line, Bar } from 'react-charts'
 
 import ReactTable from 'react-table'
 import logo from './logo.svg';
@@ -29,6 +31,24 @@ const API_HOST = 'http://localhost:8000'
 
 let api = new Api(API_HOST)
 
+let mapOptions = inputValue => {
+  return new Promise(resolve => {
+    api.get('maps', {search: inputValue, limit: 300}).then(response => response.json())
+    .then(response => {
+      resolve(response.results.map(x => ({label: x.name})))
+    })
+  })
+}
+
+let damageTypeOptions = inputValue => {
+  return new Promise(resolve => {
+    api.get('damage-types/', {search: inputValue, limit: 1024}).then(response => response.json())
+    .then(response => {
+      resolve(response.results.map(x => ({label: x.id})))
+    })
+  })
+}
+
 class App extends Component {
 
   constructor(props) {
@@ -37,7 +57,8 @@ class App extends Component {
       data: [],
       pages: 0,
       loading: false,
-      frags: []
+      frags: [],
+      histogramData: []
     }
   }
 
@@ -79,11 +100,37 @@ class App extends Component {
   fetchFrags() {
     let scope = this
     api.get('frags/', {
-      map_id: 'DH-Stoumont',
-      limit: 10000
+      map_id: scope.state.map,
+      limit: 16384
     }).then(response => response.json())
     .then(data => {
       scope.setState({frags: data.results})
+    })
+  }
+
+  fetchHistogram() {
+    let scope = this
+    // TODO: for each DT passed
+    this.state.damageTypes.map(x => ('damage_type_ids[]': ))
+    api.get('frags/range_histogram', {
+      'damage_type_ids[]': this.state.damageTypes
+    }).then(response => response.json())
+    .then(data => {
+      let newData = Object.keys(data).map(key => {
+        return {
+          label: key,
+          data: data[key]
+        }
+      })
+      this.setState({
+        histogramData: newData
+      })
+    })
+  }
+
+  changeMap(map) {
+    this.setState({map}, () => {
+      this.fetchFrags()
     })
   }
 
@@ -91,28 +138,59 @@ class App extends Component {
     this.fetchFrags()
   }
 
+
   render() {
     return (
       <div className="App">
-        <Map
-          style={{height: 1024}}
-          bounds={[[32768,-16384], [-16384,32768]]}
+        {/* <Map
+          style={{height: 800}}
+          bounds={[[-16384,-16384], [32768,32768]]}
           crs={L.CRS.Simple}
           minZoom={-7}
         >
           <ImageOverlay
             url='stoumont.png'
-            bounds={[[32768,-16384], [-16384,32768]]}
+            bounds={[[-16384,-16384], [32768,32768]]}
           />
           <HeatmapLayer
             minOpacity={0.25}
             points={this.state.frags}
-            longitudeExtractor={m => m['killer_location'][0]}
-            latitudeExtractor={m => 16384 - m['killer_location'][1]}
-            intensityExtractor={m => 2}
+            longitudeExtractor={m => m['victim_location'][0]}
+            latitudeExtractor={m => 16384 - m['victim_location'][1]}
+            intensityExtractor={m => 10}
           />
-        </Map>
-        <ReactTable
+        </Map> */}
+        <div className="" style={{margin: 16}}>
+          <AsyncSelect
+            id='damage_type_ids'
+            cacheOptions
+            defaultOptions
+            isMulti
+            closeMenuOnSelect={false}
+            // isSearchable
+            loadOptions={damageTypeOptions}
+            onChange={(value, action) => {
+              // TODO: what was 
+              let damageTypes = value.map(x => x.label)
+              damageTypes.push('DH_M1GarandDamType')
+              this.setState({damageTypes}, () => {
+                this.fetchHistogram()
+              })
+            }}
+          />
+        </div>
+        <div style={{width: 800, height: 400}}>
+          <Chart
+            data={this.state.histogramData}
+          >
+            <Axis primary type="linear" position="bottom" />
+            <Axis type="linear" cursor={{}} position="left" />
+            <Series type={Line} />
+            <Cursor />
+            <Tooltip />
+          </Chart>
+        </div>
+        {/* <ReactTable
           defaultPageSize={20}
           columns={[
             {
@@ -136,7 +214,7 @@ class App extends Component {
           onFetchData={this.fetchData.bind(this)}
           className="-striped -highlight"
           showPaginationTop={true}
-        />
+        /> */}
       </div>
     );
   }
