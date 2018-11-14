@@ -109,17 +109,18 @@ export default class Player extends React.Component {
 
     render() {
         return <div class="container">
-            <div style={{justifyContent: 'space-between'}}>
-                <h1 style={{display: 'inline-block'}}>
-                    {this.state.player && this.state.player.names[0].name}
-                </h1>
-                <h2 style={{display: 'inline-block'}}>
-                    {this.props.match.params.id}
-                </h2>
+            <div style={{display: 'flex', flexDirection: 'row', justifyContent: 'space-between'}}>
+                <div>
+                    <h1 style={{display: 'inline-block'}}>
+                        {this.state.player && this.state.player.names[0].name}
+                    </h1>
+                </div>
+                <div>
+                    <h2 style={{display: 'inline-block'}}>
+                        {this.props.match.params.id}
+                    </h2>
+                </div>
             </div>
-            <h2 style={{display: 'inline-block'}}>
-                {this.state.player && this.state.player.ips[0].ip}
-            </h2>
             <hr />
             <div>
                 <PlayerSummary

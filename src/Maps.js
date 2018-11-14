@@ -1,9 +1,11 @@
 import React from 'react'
-import ReactTable from 'react-table'
 import api from './api.js'
-import moment from 'moment'
+import PlayerDamageTypeTable from './PlayerDamageTypeTable.js'
+import ReactTable from 'react-table'
+import 'react-placeholder/lib/reactPlaceholder.css'
 
-class RoundsTable extends React.Component {
+
+class MapsTable extends React.Component {
 
     constructor(props) {
         super(props)
@@ -21,22 +23,22 @@ class RoundsTable extends React.Component {
     requestData(pageSize, page, sorted, filtered) {
         let scope = this
         this.setState({
-          loading: true,
+            loading: true,
         })
         return new Promise((resolve, reject) => {
-          api.get('rounds', {
-            limit: pageSize,
-            offset: page * pageSize
-          }).then(response => response.json())
+            api.get(`maps`, {
+                limit: pageSize,
+                offset: page * pageSize
+            }).then(response => response.json())
             .then(data => {
-              const res = {
-                rows: data.results,
-                pages: Math.ceil(data.count / pageSize)
-              }
-              resolve(res)
+                const res = {
+                    rows: data.results,
+                    pages: Math.ceil(data.count / pageSize)
+                }
+                resolve(res)
             })
         })
-      }
+    }
 
     fetchData(state, instance) {
         this.requestData(
@@ -54,43 +56,20 @@ class RoundsTable extends React.Component {
     }
 
     render() {
-        return <ReactTable
+        return <div>
+            <ReactTable
             defaultPageSize={20}
             columns={[
                 {
-                Header: 'ID',
-                accessor: 'id',
+                Header: 'Name',
+                accessor: 'name',
                 Cell: row => (
                     <div>
-                        <a href={`/rounds/${row.value}`}>
+                        <a href={`/maps/${row.value}`}>
                             {row.value}
                         </a>
                     </div>)
                 },
-                {
-                    Header: 'Version',
-                    accessor: 'version'
-                },
-                {
-                    Header: 'Map',
-                    accessor: 'map_id',
-                    Cell: row => (
-                        <div>
-                            <a href={`/maps/${row.value}`}>
-                                {row.value}
-                            </a>
-                        </div>
-                    )
-                },
-                {
-                    Header: 'Date',
-                    accessor: 'started_at',
-                    Cell: row => (
-                        <div>
-                            {moment(row.value).calendar()}
-                        </div>
-                    )
-                }
             ]}
             manual
             sortable={false}
@@ -102,10 +81,11 @@ class RoundsTable extends React.Component {
             showPaginationTop={true}
             showPageSizeOptions={false}
         />
+            </div>
     }
 }
 
-export default class Rounds extends React.Component {
+export default class Maps extends React.Component {
 
     constructor(props) {
         super(props)
@@ -113,8 +93,8 @@ export default class Rounds extends React.Component {
 
     render() {
         return <div>
-            <h1>Rounds</h1>
-            <RoundsTable />
-        </div>
+            <MapsTable
+            />
+            </div>
     }
 }

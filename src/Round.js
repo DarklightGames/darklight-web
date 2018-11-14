@@ -61,12 +61,12 @@ class RoundScoreboardTable extends React.Component {
             defaultPageSize={20}
             columns={[
                 {
-                Header: 'ROID',
-                accessor: 'player.id',
+                Header: 'Name',
+                accessor: 'player',
                 Cell: row => (
                     <div>
-                        <a href={`/players/${row.value}`}>
-                            {row.value}
+                        <a href={`/players/${row.value.id}`}>
+                            {row.value.name}
                         </a>
                     </div>)
                 },
@@ -101,11 +101,30 @@ export default class Round extends React.Component {
 
     constructor(props) {
         super(props)
+        this.state = {
+            round: null
+        }
+        this.fetchRound()
+    }
+
+    fetchRound() {
+        api.get(`rounds/${this.props.match.params.id}/`)
+            .then(response => response.json())
+            .then(response => {
+                this.setState({
+                    round: response
+                })
+            })
     }
 
     render() {
         return <div>
             <h1>#{this.props.match.params.id}</h1>
+            {this.state.round &&
+                <div>
+                    <h1>{this.state.round.map_id}</h1>
+                </div>
+            }
             <RoundScoreboardTable
                 roundId={this.props.match.params.id}
             />
