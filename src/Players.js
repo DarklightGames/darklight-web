@@ -69,14 +69,18 @@ class PlayersTable extends React.Component {
                 },
                 {
                 Header: 'Name',
-                accessor: 'names[0].name'
-                },
-                {
-                Header: 'IP Address',
-                accessor: 'ips[0].ip'
+                accessor: 'names',
+                Cell: row => (
+                    <div>
+                    <span title={`${row.value.map(x => x.name).join(', ')}`}>
+                        {row.value[0].name}
+                    </span>
+                    </div>
+                )
                 }
             ]}
             manual
+            filterable
             sortable={false}
             data={this.state.data}
             pages={this.state.pages}

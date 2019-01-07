@@ -8,6 +8,8 @@ import Player from './Player'
 import Rounds from './Rounds'
 import Round from './Round'
 import MapComponent from './Map'
+import Weapons from './Weapons'
+import Reports from './Reports'
 
 export default class Main extends React.Component {
 
@@ -22,6 +24,8 @@ export default class Main extends React.Component {
                     <Route exact path='/players' component={Players} />
                     <Route exact path='/maps' component={Maps} />
                     <Route exact path='/maps/:id' component={MapComponent} />
+                    <Route exact path='/weapons' component={Weapons} />
+                    <Route exact path='/reports' component={Reports} />
                     {/* <Route path='/weapons' component={Weapons} /> */}
                 </Switch>
             </div>

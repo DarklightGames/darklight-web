@@ -29,7 +29,6 @@ export default class Header extends React.Component {
                                         value: x.id,
                                         label: x.names[0].name
                                     }))
-                                    console.log(results)
                                     resolve(results)
                                 })
                             })
@@ -52,6 +51,9 @@ export default class Header extends React.Component {
                     </li>
                     <li>
                         <a href="/weapons/">Weapons</a>
+                    </li>
+                    <li>
+                        <a href="/reports/">Reports</a>
                     </li>
                 </ul>
             </div>

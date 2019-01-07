@@ -58,30 +58,30 @@ class MapsTable extends React.Component {
     render() {
         return <div>
             <ReactTable
-            defaultPageSize={20}
-            columns={[
-                {
-                Header: 'Name',
-                accessor: 'name',
-                Cell: row => (
-                    <div>
-                        <a href={`/maps/${row.value}`}>
-                            {row.value}
-                        </a>
-                    </div>)
-                },
-            ]}
-            manual
-            sortable={false}
-            data={this.state.data}
-            pages={this.state.pages}
-            loading={this.state.loading}
-            onFetchData={this.fetchData.bind(this)}
-            className="-striped -highlight"
-            showPaginationTop={true}
-            showPageSizeOptions={false}
-        />
-            </div>
+                defaultPageSize={20}
+                columns={[
+                    {
+                    Header: 'Name',
+                    accessor: 'name',
+                    Cell: row => (
+                        <div>
+                            <a href={`/maps/${row.value}`}>
+                                {row.value}
+                            </a>
+                        </div>)
+                    },
+                ]}
+                manual
+                sortable={false}
+                data={this.state.data}
+                pages={this.state.pages}
+                loading={this.state.loading}
+                onFetchData={this.fetchData.bind(this)}
+                className="-striped -highlight"
+                showPaginationTop={true}
+                showPageSizeOptions={false}
+            />
+        </div>
     }
 }
 

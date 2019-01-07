@@ -3,13 +3,16 @@ import { Map, ImageOverlay } from 'react-leaflet'
 import HeatmapLayer from 'react-leaflet-heatmap-layer'
 import api from './api'
 import L from 'leaflet'
+import RoundsTable from './RoundsTable';
 
 class FragMap extends React.Component {
 
     constructor(props) {
         super(props)
         this.state = {
-            data: []
+            data: [],
+            map: null,
+            summary: null,
         }
     }
 
@@ -18,34 +21,56 @@ class FragMap extends React.Component {
     }
 
     fetchData() {
-        api.get(`maps/${this.props.mapId}/heatmap/`)
+        api.get(`maps/${this.props.mapId}/`)
             .then(response => response.json())
             .then(response => {
                 this.setState({
-                    data: response.data
+                    map: response
                 })
+                api.get(`maps/${this.props.mapId}/heatmap/`)
+                    .then(response => response.json())
+                    .then(response => {
+                        console.log(JSON.stringify(response))
+                        this.setState({
+                            data: response.data
+                        })
+                    })
             })
     }
 
     render() {
-        return <Map
+        if (this.state.map) {
+            let bounds = this.state.map.bounds
+            // there is a translation problem when the min/max are not even, so let's make them evenly away from the center
+            for (let i = 0; i < 2; ++i) {
+                let min = bounds[0][i]
+                let max = bounds[1][i]
+                let center = (max - min) / 2
+                min += -center
+                max += -center
+                bounds[0][i] = min
+                bounds[1][i] = max
+            }
+            return <Map
             style={{ height: 512 }}
-            bounds={[[-16384, -16384], [32768, 32768]]}
+            bounds={bounds}
             crs={L.CRS.Simple}
             minZoom={-7}
         >
             <ImageOverlay
                 url={`/maps/${this.props.mapId}.png`}
-                bounds={[[-16384, -16384], [32768, 32768]]}
+                bounds={bounds}
             />
             <HeatmapLayer
                 minOpacity={0.125}
                 points={this.state.data}
                 longitudeExtractor={m => m[0]}
-                latitudeExtractor={m => 16384 - m[1]}
+                latitudeExtractor={m => m[1]}   // some sort of lat thing (needs to be flipped)
                 intensityExtractor={m => 10}
             />
         </Map>
+        }
+        return null
     }
 }
 
@@ -53,11 +78,52 @@ export default class MapComponent extends React.Component {
 
     constructor(props) {
         super(props)
+        this.state = {
+            summary: null
+        }
+    }
+
+    componentWillMount() {
+        this.fetchSummary()
+    }
+
+    fetchSummary() {
+        api.get(`maps/${this.props.match.params.id}/summary`)
+            .then(response => response.json())
+            .then(response => {
+                this.setState({
+                    summary: response
+                })
+            })
     }
 
     render() {
         return <div>
             <h1>{this.props.match.params.id}</h1>
+            {this.state.summary && <div>
+                <table>
+                    <tr>
+                        <td>Axis Wins</td>
+                        <td>{this.state.summary.axis_wins}</td>
+                    </tr>
+                    <tr>
+                        <td>Allied Wins</td>
+                        <td>{this.state.summary.allied_wins}</td>
+                    </tr>
+                    <tr>
+                        <td>Axis Deaths</td>
+                        <td>{this.state.summary.axis_deaths}</td>
+                    </tr>
+                    <tr>
+                        <td>Allied Deaths</td>
+                        <td>{this.state.summary.allied_deaths}</td>
+                    </tr>
+                </table>
+            </div>}
+            <h1>Rounds</h1>
+            <RoundsTable
+            />
+            <h1>Heatmap</h1>
             <FragMap
                 mapId={this.props.match.params.id}
             />

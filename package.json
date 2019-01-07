@@ -9,6 +9,7 @@
     "moment": "^2.22.2",
     "momentjs": "^2.0.0",
     "react": "^16.6.0",
+    "react-calendar-heatmap": "^1.8.0",
     "react-charts": "^1.0.10",
     "react-content-loader": "^3.2.0",
     "react-dom": "^16.6.0",

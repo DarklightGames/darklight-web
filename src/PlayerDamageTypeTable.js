@@ -55,7 +55,7 @@ export default class PlayerDamageTypeTable extends React.Component {
 
     render() {
         return <ReactTable
-            defaultPageSize={20}
+            defaultPageSize={10}
             columns={[
                 {
                 Header: 'damage_type_id',
