@@ -27,7 +27,7 @@ class Api {
   }
 }
 
-let host = 'http://localhost:8000'
+let host = 'http://46.101.44.19'  // TODO: gate this based on dev vs. prod
 let api = new Api(host)
 
 export default api;
