@@ -1,6 +1,5 @@
 import React from 'react'
 import api from './api.js'
-import PlayerDamageTypeTable from './PlayerDamageTypeTable.js'
 import ReactTable from 'react-table'
 import 'react-placeholder/lib/reactPlaceholder.css'
 
@@ -21,7 +20,6 @@ class MapsTable extends React.Component {
     }
     
     requestData(pageSize, page, sorted, filtered) {
-        let scope = this
         this.setState({
             loading: true,
         })
@@ -86,10 +84,6 @@ class MapsTable extends React.Component {
 }
 
 export default class Maps extends React.Component {
-
-    constructor(props) {
-        super(props)
-    }
 
     render() {
         return <div>

@@ -7,7 +7,7 @@ class Api {
     var url = new URL(this.host + '/' + path)
     if (params) {
       if ((params instanceof Object) === false) {
-        throw 'Invalid type (' + typeof(params) + ') for parameters'
+        throw Error('Invalid type (' + typeof(params) + ') for parameters')
       }
       for (let key in params) {
         let value = params[key]
@@ -16,11 +16,10 @@ class Api {
         } else if (value instanceof Array) {
           value.forEach(x => url.searchParams.append(key + '[]', x))
         } else {
-          throw 'Invalid type (' + typeof(value) + ') for parameter "' + key + '"'
+          throw Error('Invalid type (' + typeof(value) + ') for parameter "' + key + '"')
         }
       }
     }
-    console.log(url)
     return fetch(url, {
       mode: 'cors'
     })

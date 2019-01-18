@@ -1,7 +1,4 @@
-import React, { Link } from 'react'
-import { Switch, Route } from 'react-router-dom'
-import ReactTable from 'react-table'
-import api from './api.js'
+import React from 'react'
 
 export default class Reports extends React.Component {
 
@@ -13,6 +10,7 @@ export default class Reports extends React.Component {
             <ul>
                 <li>Squad Rally Points</li>
                 <li>Players With Most Kills</li>
+                <li>Highest Friendly Fire % Weapons</li>
                 <li>Highest Friendly Fire % Weapons</li>
             </ul>
         </div>

@@ -88,9 +88,9 @@ export default class RoundsTable extends React.Component {
 
     // TODO: move to 
     getWinnerFlag(winner) {
-        if (winner == 0) {
+        if (winner === 0) {
             return "/axis.svg"
-        } else if (winner == 1) {
+        } else if (winner === 1) {
             return "/allies.svg"
         }
         return null
@@ -177,7 +177,7 @@ export default class RoundsTable extends React.Component {
                     accessor: 'winner',
                     Cell: row => (
                         <div>
-                            <img src={this.getWinnerFlag(row.value)} style={{ height: 20, filter: 'invert(0.75)' }} />
+                            <img alt="" src={this.getWinnerFlag(row.value)} style={{ height: 20, filter: 'invert(0.75)' }} />
                         </div>
                     ),
                     Filter: ({ filter, onChange }) =>

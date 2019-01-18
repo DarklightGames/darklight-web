@@ -8,7 +8,7 @@ export default class Header extends React.Component {
         return <header>
             <div className="container">
                 <a href="/">
-                    <img src="/logo.png" height="42" width="42" style={{float: "left", paddingRight: 16}} />
+                    <img alt="Darklight Games" src="/logo.png" height="42" width="42" style={{float: "left", paddingRight: 16}} />
                 </a>
                 <div style={{width: 386, float: "left"}}>
                     <AsyncSelect

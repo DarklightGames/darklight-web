@@ -1,7 +1,7 @@
 import React from 'react'
 import api from './api.js'
 import AsyncSelect from 'react-select/lib/Async'
-import { Chart, Axis, Series, Line } from 'react-charts'
+import { Chart, Axis, Series, Bar } from 'react-charts'
 import { cloneDeep } from 'lodash'
 
 let damageTypeOptions = inputValue => {
@@ -16,7 +16,6 @@ let damageTypeOptions = inputValue => {
 class WeaponRangeHistogram extends React.Component {
 
     fetchHistogram() {
-        let scope = this
         api.get('frags/range_histogram', {
             'damage_type_ids': this.state.damageTypes
         }).then(response => response.json())
@@ -77,7 +76,7 @@ class WeaponRangeHistogram extends React.Component {
                 >
                     <Axis primary type="linear" />
                     <Axis type="linear" />
-                    <Series type={Line} />
+                    <Series type={Bar} />
                 </Chart>
             </div>
             <div>

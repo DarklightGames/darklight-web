@@ -1,12 +1,4 @@
-import React, { Component } from 'react';
-import { Map, ImageOverlay } from 'react-leaflet'
-import HeatmapLayer from 'react-leaflet-heatmap-layer'
-import AsyncSelect from 'react-select/lib/Async'
-import _ from 'lodash'
-
-import ReactTable from 'react-table'
-import logo from './logo.svg';
-import L from 'leaflet'
+import React, { Component } from 'react'
 
 import './App.css';
 import "react-table/react-table.css";

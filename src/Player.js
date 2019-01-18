@@ -1,8 +1,6 @@
 import React from 'react'
 import api from './api.js'
 import PlayerDamageTypeTable from './PlayerDamageTypeTable.js'
-import { List } from 'react-content-loader'
-import ReactPlaceholder from 'react-placeholder'
 import 'react-placeholder/lib/reactPlaceholder.css'
 import CalendarHeatmap from 'react-calendar-heatmap'
 import 'react-calendar-heatmap/dist/styles.css'
@@ -147,7 +145,7 @@ export default class Player extends React.Component {
                 </div>
                 <div>
                     <h2 style={{display: 'inline-block'}}>
-                        <img src="/steam.svg"/>
+                        <img alt="Steam" src="/steam.svg"/>
                         <a href={`https://steamcommunity.com/profiles/${this.props.match.params.id}`}>
                             #{this.props.match.params.id}
                         </a>

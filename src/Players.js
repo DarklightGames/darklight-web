@@ -1,5 +1,4 @@
-import React, { Link } from 'react'
-import { Switch, Route } from 'react-router-dom'
+import React from 'react'
 import ReactTable from 'react-table'
 import api from './api.js'
 
@@ -19,7 +18,6 @@ class PlayersTable extends React.Component {
     }
     
     requestData(pageSize, page, sorted, filtered) {
-        let scope = this
         this.setState({
           loading: true,
         })
@@ -94,10 +92,6 @@ class PlayersTable extends React.Component {
 }
 
 export default class Players extends React.Component {
-
-    constructor(props) {
-        super(props)
-    }
 
     render() {
         return <div>

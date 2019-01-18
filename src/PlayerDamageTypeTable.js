@@ -1,7 +1,6 @@
 import React from 'react'
-import Api from './api';
 import ReactTable from 'react-table'
-import api from './api';
+import api from './api'
 
 export default class PlayerDamageTypeTable extends React.Component {
 
@@ -18,7 +17,6 @@ export default class PlayerDamageTypeTable extends React.Component {
     }
 
     requestData(pageSize, page, sorted, filtered) {
-        let scope = this
         this.setState({
           loading: true,
         })

@@ -1,6 +1,5 @@
 import React from 'react'
 import api from './api.js'
-import PlayerDamageTypeTable from './PlayerDamageTypeTable.js'
 import ReactTable from 'react-table'
 import 'react-placeholder/lib/reactPlaceholder.css'
 import moment from 'moment'
@@ -22,7 +21,6 @@ class RoundScoreboardTable extends React.Component {
     }
 
     requestData(pageSize, page, sorted, filtered) {
-        let scope = this
         this.setState({
             loading: true,
         })
@@ -128,13 +126,13 @@ export default class Round extends React.Component {
     }
 
     getWinnerString(winner) {
-        if (winner == -1) {
+        if (winner === -1) {
             return 'N/A'
-        } else if (winner == 0) {
+        } else if (winner === 0) {
             return 'Axis'
-        } else if (winner == 1) {
+        } else if (winner === 1) {
             return 'Allies'
-        } else if (winner == 2) {
+        } else if (winner === 2) {
             return 'Draw'
         }
     }
