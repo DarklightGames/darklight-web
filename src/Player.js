@@ -97,10 +97,12 @@ class PlayerSessionHeatmap extends React.Component {
         api.get(`players/${this.props.playerId}/sessions/`)
         .then(response => response.json())
         .then(response => {
+            let entries = Object.keys(response.results).map(key => ({
+                date: key,
+                value: response.results[key]
+            }))
             this.setState({
-                values: response.results.map(x => ({
-                    date: x
-                }))
+                values: entries
             })
         })
     }
@@ -111,7 +113,7 @@ class PlayerSessionHeatmap extends React.Component {
             startDate={this.props.startDate}
             endDate={this.props.endDate}
             values={this.state.values}
-            titleForValue={value => value && value.date}    /* this should actually be a duration (get this from api) */
+            titleForValue={value => value && moment.duration(value.value).humanize()}    /* this should actually be a duration (get this from api) */
         />
     }
 }

@@ -10,6 +10,7 @@ import Round from './Round'
 import MapComponent from './Map'
 import Weapons from './Weapons'
 import Reports from './Reports'
+import DamageTypeFriendlyFire from './reports/DamageTypeFriendlyFire';
 
 export default class Main extends React.Component {
 
@@ -26,6 +27,7 @@ export default class Main extends React.Component {
                     <Route exact path='/maps/:id' component={MapComponent} />
                     <Route exact path='/weapons' component={Weapons} />
                     <Route exact path='/reports' component={Reports} />
+                    <Route exact path='/reports/damage-type-friendly-fire' component={DamageTypeFriendlyFire} />
                     {/* <Route path='/weapons' component={Weapons} /> */}
                 </Switch>
             </div>

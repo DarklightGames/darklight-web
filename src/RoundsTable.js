@@ -4,6 +4,7 @@ import api from './api.js'
 import moment from 'moment'
 import AsyncSelect from 'react-select/lib/Async'
 import Select from 'react-select'
+import PropTypes from 'prop-types'
 
 const winnerOptions = [
     { value: '0', label: 'Axis' },
@@ -22,6 +23,11 @@ let mapOptions = inputValue => {
 
 export default class RoundsTable extends React.Component {
 
+    static propTypes = {
+        map: PropTypes.string,
+        defaultPageSize: PropTypes.number
+    }
+
     constructor(props) {
         super(props)
         this.state = {
@@ -29,11 +35,11 @@ export default class RoundsTable extends React.Component {
             loading: false,
             pages: 0,
             page: 0,
-            pageSize: 25,
+            pageSize: this.props.defaultPageSize,
             sorted: false,
             filter: {
                 winner: null,
-                map: null
+                map: this.props.map
             }
         }
     }
@@ -105,7 +111,7 @@ export default class RoundsTable extends React.Component {
                 }
             }}
             filterable
-            defaultPageSize={20}
+            defaultPageSize={this.props.defaultPageSize}
             columns={[
                 {
                     Header: 'ID',
@@ -139,10 +145,12 @@ export default class RoundsTable extends React.Component {
                     ),
                     Filter: ({ filter, onChange }) =>
                         <AsyncSelect
+                            isDisabled={this.props.map != null}
                             isClearable
                             id='map_ids'
                             cacheOptions
                             loadOptions={mapOptions}
+                            // value={this.state.filter.map}
                             onChange={(value, action) => {
                                 this.setState({
                                     filter: {
@@ -199,4 +207,9 @@ export default class RoundsTable extends React.Component {
             showPageSizeOptions={true}
         />
     }
+}
+
+RoundsTable.defaultProps = {
+    map: null,
+    defaultPageSize: 25
 }

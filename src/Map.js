@@ -122,6 +122,8 @@ export default class MapComponent extends React.Component {
             </div>}
             <h1>Rounds</h1>
             <RoundsTable
+                defaultPageSize={5}
+                map={this.props.match.params.id}
             />
             <h1>Heatmap</h1>
             <FragMap
