@@ -3,6 +3,7 @@ import api from './api.js'
 import ReactTable from 'react-table'
 import 'react-placeholder/lib/reactPlaceholder.css'
 import moment from 'moment'
+import RoundPlayerSummary from './RoundPlayerSummary'
 
 
 class RoundScoreboardTable extends React.Component {
@@ -57,6 +58,12 @@ class RoundScoreboardTable extends React.Component {
     render() {
         return <div>
             <ReactTable
+                SubComponent={row => {
+                    return <RoundPlayerSummary
+                        roundId={this.props.roundId}
+                        playerId={row.original.player.id}
+                    />
+                }}
                 defaultPageSize={20}
                 columns={[
                     {
