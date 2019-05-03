@@ -56,11 +56,11 @@ export default class PlayerDamageTypeTable extends React.Component {
             defaultPageSize={10}
             columns={[
                 {
-                Header: 'damage_type_id',
+                Header: 'Damage Type',
                 accessor: 'damage_type_id'
                 },
                 {
-                Header: 'kills',
+                Header: 'Kills',
                 accessor: 'kills'
                 },
             ]}

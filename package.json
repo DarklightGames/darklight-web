@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@icons/material": "^0.3.0",
     "canvasjs": "^1.8.1",
     "chart.js": "^2.7.3",
     "crc": "^3.8.0",
@@ -23,7 +24,8 @@
     "react-router-dom": "^4.3.1",
     "react-scripts": "2.1.1",
     "react-select": "^2.1.1",
-    "react-table": "^6.8.6"
+    "react-table": "^6.8.6",
+    "react-tooltip": "^3.10.0"
   },
   "scripts": {
     "start": "react-scripts start",

@@ -13,27 +13,23 @@ class RoundScoreboardTable extends React.Component {
         this.state = {
             data: [],
             loading: false,
-            pages: 0,
-            page: 0,
-            pageSize: 25,
             sorted: false,
             filtered: false
         }
     }
 
-    requestData(pageSize, page, sorted, filtered) {
+    requestData() {
         this.setState({
             loading: true,
         })
         return new Promise((resolve, reject) => {
             api.get(`rounds/${this.props.roundId}/scoreboard`, {
-                limit: pageSize,
-                offset: page * pageSize
+                limit: 1000,
+                offset: 0
             }).then(response => response.json())
                 .then(data => {
                     const res = {
-                        rows: data.results,
-                        pages: Math.ceil(data.count / pageSize)
+                        rows: data.results
                     }
                     resolve(res)
                 })
@@ -41,23 +37,25 @@ class RoundScoreboardTable extends React.Component {
     }
 
     fetchData(state, instance) {
-        this.requestData(
-            state.pageSize,
-            state.page,
-            state.sorted,
-            state.filtered
-        ).then(res => {
+        this.requestData().then(res => {
             this.setState({
                 data: res.rows,
-                pages: res.pages,
                 loading: false
             })
         })
     }
 
+    componentWillMount() {
+        this.fetchData()
+    }
+
     render() {
         return <div>
             <ReactTable
+                // defaultSorted={{
+                //     id: 'kills',
+                //     desc: true
+                // }}
                 SubComponent={row => {
                     return <RoundPlayerSummary
                         roundId={this.props.roundId}
@@ -77,6 +75,7 @@ class RoundScoreboardTable extends React.Component {
                             </div>)
                     },
                     {
+                        id: 'kills',
                         Header: 'K',
                         accessor: 'kills'
                     },
@@ -98,15 +97,13 @@ class RoundScoreboardTable extends React.Component {
                         )
                     }
                 ]}
-                manual
-                sortable={false}
+                // manual
+                sortable={true}
                 data={this.state.data}
-                pages={this.state.pages}
                 loading={this.state.loading}
-                onFetchData={this.fetchData.bind(this)}
                 className="-striped -highlight"
                 showPaginationTop={true}
-                showPageSizeOptions={false}
+                showPageSizeOptions={true}
             />
         </div>
     }

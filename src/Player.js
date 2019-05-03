@@ -5,6 +5,7 @@ import 'react-placeholder/lib/reactPlaceholder.css'
 import CalendarHeatmap from 'react-calendar-heatmap'
 import 'react-calendar-heatmap/dist/styles.css'
 import moment from 'moment'
+import ReactTooltip from 'react-tooltip'
 
 class PlayerSummary extends React.Component {
 
@@ -108,13 +109,17 @@ class PlayerSessionHeatmap extends React.Component {
     }
 
     render() {
-        return <CalendarHeatmap
-            showWeekdayLabels={true}
-            startDate={this.props.startDate}
-            endDate={this.props.endDate}
-            values={this.state.values}
-            titleForValue={value => value && moment.duration(value.value).humanize()}    /* this should actually be a duration (get this from api) */
-        />
+        return <div style={{flexShrink: 1}}>
+        {/* TODO: different colorings for different lengths of play (<15 min, <1hr, <2hr) */}
+            <CalendarHeatmap
+                // classForValue={(value) => value && moment.duration(value).minutes() > 15 ? {fill: '#ff00ff'} : {fill: '#ff0000'}}
+                showWeekdayLabels={true}
+                startDate={this.props.startDate}
+                endDate={this.props.endDate}
+                values={this.state.values}
+                titleForValue={value => value && moment.duration(value.value).humanize()}
+            />
+        </div>
     }
 }
 
@@ -141,9 +146,14 @@ export default class Player extends React.Component {
         return <div class="container">
             <div style={{display: 'flex', flexDirection: 'row', justifyContent: 'space-between'}}>
                 <div>
-                    <h1 style={{display: 'inline-block'}}>
-                        {this.state.player && this.state.player.names[0].name}
-                    </h1>
+                    {this.state.player &&
+                        <div>
+                            {this.state.player.names.length > 0 && <ReactTooltip place="right"/>}
+                            <h1 data-tip={this.state.player.names.map(x => x.name)} style={{display: 'inline-block'}}>
+                                {this.state.player.names[0].name}
+                            </h1>
+                        </div>
+                    }
                 </div>
                 <div>
                     <h2 style={{display: 'inline-block'}}>
@@ -159,9 +169,6 @@ export default class Player extends React.Component {
                     playerId={this.props.match.params.id}
                     data={this.state.summary}
                 />
-            </div>
-            <div>
-                <h1>Sessions</h1>
                 <PlayerSessionHeatmap
                     playerId={this.props.match.params.id}
                     endDate={moment().toDate()}

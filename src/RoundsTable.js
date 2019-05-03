@@ -5,6 +5,7 @@ import moment from 'moment'
 import AsyncSelect from 'react-select/lib/Async'
 import Select from 'react-select'
 import PropTypes from 'prop-types'
+import TeamIcon from './components/TeamIcon'
 
 const winnerOptions = [
     { value: '0', label: 'Axis' },
@@ -92,16 +93,6 @@ export default class RoundsTable extends React.Component {
         })
     }
 
-    // TODO: move to 
-    getWinnerFlag(winner) {
-        if (winner === 0) {
-            return "/axis.svg"
-        } else if (winner === 1) {
-            return "/allies.svg"
-        }
-        return null
-    }
-
     render() {
         return <ReactTable
             {...this.props}
@@ -184,9 +175,7 @@ export default class RoundsTable extends React.Component {
                     Header: 'Winner',
                     accessor: 'winner',
                     Cell: row => (
-                        <div>
-                            <img alt="" src={this.getWinnerFlag(row.value)} style={{ height: 20, filter: 'invert(0.75)' }} />
-                        </div>
+                        <TeamIcon teamIndex={row.value} />
                     ),
                     Filter: ({ filter, onChange }) =>
                         <Select
