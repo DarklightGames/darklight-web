@@ -4,7 +4,201 @@ import ReactTable from 'react-table'
 import 'react-placeholder/lib/reactPlaceholder.css'
 import moment from 'moment'
 import RoundPlayerSummary from './RoundPlayerSummary'
+import TeamIcon from './components/TeamIcon'
+import AsyncSelect from 'react-select/lib/Async'
+var momentDurationFormatSetup = require("moment-duration-format");
+momentDurationFormatSetup(moment)
 
+
+// TODO: probably need to put this somewhere for re-use!
+let damageTypeOptions = inputValue => {
+    return new Promise(resolve => {
+        api.get('damage-types/', { search: inputValue, limit: 1000 }).then(response => response.json())
+            .then(response => {
+                resolve(response.results.map(x => ({ label: x.id, value: x.id })))
+            })
+    })
+}
+
+class RoundFragTable extends React.Component {
+
+    constructor(props) {
+        super(props)
+        this.state = {
+            data: [],
+            pages: 0,
+            loading: false,
+            pageSize: 25
+        }
+    }
+
+    playerOptions = (inputValue) => {
+        return new Promise(resolve => {
+            api.get(`rounds/${this.props.roundId}/players`, { search: inputValue }).then(response => response.json())
+                .then(response => {
+                    resolve(response.results.map(x => ({ label: x.names[0].name, value: x.id })))
+                })
+        })
+    }
+
+    requestData(pageSize, page, sorted, filtered) {
+        let order_by = Object.keys(sorted).map(key => {
+            let value = sorted[key]
+            return `${value.desc ? '-' : ''}${value.id}`
+        }).join(',')
+        let filters = {
+            ...Object.values(filtered)
+                .reduce((newFilters, value) => {
+                    if (value.value === null || value.value.value === undefined) {
+                        return {...newFilters}
+                    } else {
+                        return {
+                            ...newFilters, [value.id]: value.value.value
+                        }
+                    }
+                }, {})
+        }
+        this.setState({loading: true})
+        return new Promise((resolve, reject) => {
+            api.get(`rounds/${this.props.roundId}/frags`, {
+                limit: pageSize,
+                offset: page * pageSize,
+                order_by: order_by,
+                ...filters
+            }).then(response => response.json())
+            .then(data => {
+              const res = {
+                rows: data.results,
+                pages: Math.ceil(data.count / pageSize)
+              }
+              resolve(res)
+            })
+        })
+    }
+
+    fetchData(state, instance) {
+        this.requestData(
+            state.pageSize,
+            state.page,
+            state.sorted,
+            state.filtered
+        ).then(res => {
+            this.setState({
+                data: res.rows,
+                pages: res.pages,
+                loading: false
+            })
+        })
+    }
+
+    render() {
+        return <div>
+            <ReactTable
+                getTheadFilterThProps={(state, rowInfo, column) => {
+                    return {
+                        style: { overflow: 'visible' }
+                    }
+                }}
+                defaultPageSize={20}
+                filterable
+                sortable
+                columns={[
+                    {
+                        Header: 'Killer',
+                        accessor: 'killer',
+                        sortable: false,
+                        Cell: row => (
+                            <div>
+                                <TeamIcon teamIndex={row.value.team} />
+                                <a href={`/players/${row.value.id}`}>
+                                    {row.value.name}
+                                </a>
+                            </div>
+                        ),
+                        Filter: ({ filter, onChange }) => 
+                            <AsyncSelect
+                                isClearable
+                                id='killer_id'
+                                isSearchable
+                                cacheOptions
+                                defaultOptions
+                                loadOptions={this.playerOptions}
+                                onChange={(value, action) => {
+                                    onChange(value)
+                                }}
+                            />
+                    },
+                    {
+                        Header: 'Damage Type',
+                        accessor: 'damage_type_id',
+                        sortable: false,
+                        Filter: ({ filter, onChange }) => 
+                            <AsyncSelect
+                                id='damage_type_id'
+                                isClearable
+                                cacheOptions
+                                defaultOptions
+                                loadOptions={damageTypeOptions}
+                                onChange={(value, action) => {
+                                    onChange(value)
+                                }}
+                            />
+                    },
+                    {
+                        Header: 'Victim',
+                        accessor: 'victim',
+                        sortable: false,
+                        Cell: row => (
+                            <div>
+                                <TeamIcon teamIndex={row.value.team} />
+                                <a href={`/players/${row.value.id}`}>
+                                    {row.value.name}
+                                </a>
+                            </div>
+                        ),
+                        Filter: ({ filter, onChange }) => 
+                            <AsyncSelect
+                                id='victim_id'
+                                isClearable
+                                cacheOptions
+                                defaultOptions
+                                loadOptions={this.playerOptions}
+                                onChange={(value, action) => {
+                                    onChange(value)
+                                }}
+                            />
+                    },
+                    {
+                    Header: 'Distance',
+                    accessor: 'distance',
+                    filterable: false,
+                    Cell: row => (
+                        <div>
+                            {`${Math.ceil(row.value / 60.352)}m`}
+                        </div>
+                    )
+                    },
+                    {
+                        Header: 'Time',
+                        accessor: 'time',
+                        filterable: false,
+                        Cell: row => (
+                            <div>
+                                {moment.duration(row.value, 'seconds').format()}
+                            </div>
+                        )
+                    }
+                ]}
+                manual
+                className="-striped -highlight"
+                data={this.state.data}
+                pages={this.state.pages}
+                loading={this.state.loading}
+                onFetchData={this.fetchData.bind(this)}
+            />
+        </div>
+    }
+}
 
 class RoundScoreboardTable extends React.Component {
 
@@ -196,6 +390,12 @@ export default class Round extends React.Component {
                 Scoreboard
             </h1>
             <RoundScoreboardTable
+                roundId={this.props.match.params.id}
+            />
+            <h1>
+                Frags
+            </h1>
+            <RoundFragTable
                 roundId={this.props.match.params.id}
             />
         </div>

@@ -114,19 +114,20 @@ export default class RoundsTable extends React.Component {
                             </a>
                         </div>
                     ),
-                    Filter: ({ filter, onChange }) => null
+                    filterable: false,
+                    sortable: false,
                 },
                 {
                     Header: 'Version',
                     accessor: 'version',
-                    Filter: ({ filter, onChange }) =>
-                        <AsyncSelect
-                        />
+                    filterable: false,
+                    sortable: false,
                 },
                 {
                     Header: 'Map',
                     accessor: 'map',
                     width: 300,
+                    sortable: false,
                     Cell: row => (
                         <div>
                             <a href={`/maps/${row.value}`}>
@@ -157,6 +158,8 @@ export default class RoundsTable extends React.Component {
                     Header: 'Date',
                     accessor: 'started_at',
                     width: 200,
+                    filterable: false,
+                    sortable: false,
                     Cell: row => (
                         <div>
                             {moment(row.value).calendar()}
@@ -166,10 +169,14 @@ export default class RoundsTable extends React.Component {
                 {
                     Header: 'Players',
                     accessor: 'num_players',
+                    filterable: false,
+                    sortable: false,
                 },
                 {
                     Header: 'Kills',
                     accessor: 'num_kills',
+                    filterable: false,
+                    sortable: false,
                 },
                 {
                     Header: 'Winner',
@@ -177,12 +184,8 @@ export default class RoundsTable extends React.Component {
                     Cell: row => (
                         <TeamIcon teamIndex={row.value} />
                     ),
-                    Filter: ({ filter, onChange }) =>
-                        <Select
-                            isSearchable={false}
-                            value={this.state.filter.winner}
-                            options={winnerOptions}
-                        />
+                    filterable: false,
+                    sortable: false,
                 }
             ]}
             manual

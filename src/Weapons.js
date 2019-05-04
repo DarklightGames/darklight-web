@@ -4,6 +4,7 @@ import AsyncSelect from 'react-select/lib/Async'
 import { Chart, Axis, Series, Bar } from 'react-charts'
 import { cloneDeep } from 'lodash'
 
+// TODO: probably need to put this somewhere for re-use!
 let damageTypeOptions = inputValue => {
     return new Promise(resolve => {
         api.get('damage-types/', { search: inputValue, limit: 0 }).then(response => response.json())
