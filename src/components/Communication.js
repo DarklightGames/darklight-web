@@ -116,7 +116,9 @@ export default class Communication extends React.Component {
             Object.entries(response.axis.types).forEach(element => {
                 let type = element[0]
                 let index = labels.indexOf(type)
-                data[index] = element[1]
+                if (index !== -1) {
+                    data[index] = element[1]
+                }
             });
             datasets.push({
                 label: 'Axis',
@@ -133,7 +135,9 @@ export default class Communication extends React.Component {
             Object.entries(response.allies.types).forEach(element => {
                 let type = element[0]
                 let index = labels.indexOf(type)
-                data[index] = element[1]
+                if (index !== -1) {
+                    data[index] = element[1]
+                }
             });
             datasets.push({
                 label: 'Allies',
@@ -149,7 +153,6 @@ export default class Communication extends React.Component {
                 labels: Array.from(labels),
                 datasets
             }
-            console.log(data)
             this.setState({ data })
         })
     }
