@@ -6,6 +6,7 @@ import moment from 'moment'
 import RoundPlayerSummary from './RoundPlayerSummary'
 import TeamIcon from './components/TeamIcon'
 import AsyncSelect from 'react-select/lib/Async'
+import Communication from './components/Communication'
 var momentDurationFormatSetup = require("moment-duration-format");
 momentDurationFormatSetup(moment)
 
@@ -28,7 +29,7 @@ class RoundFragTable extends React.Component {
             data: [],
             pages: 0,
             loading: false,
-            pageSize: 25
+            pageSize: 10
         }
     }
 
@@ -99,7 +100,7 @@ class RoundFragTable extends React.Component {
                         style: { overflow: 'visible' }
                     }
                 }}
-                defaultPageSize={20}
+                defaultPageSize={10}
                 filterable
                 sortable
                 columns={[
@@ -200,6 +201,7 @@ class RoundFragTable extends React.Component {
     }
 }
 
+
 class RoundScoreboardTable extends React.Component {
 
     constructor(props) {
@@ -256,7 +258,7 @@ class RoundScoreboardTable extends React.Component {
                         playerId={row.original.player.id}
                     />
                 }}
-                defaultPageSize={20}
+                defaultPageSize={10}
                 columns={[
                     {
                         Header: 'Name',
@@ -313,6 +315,7 @@ export default class Round extends React.Component {
         this.fetchRound()
     }
 
+
     fetchRound() {
         api.get(`rounds/${this.props.match.params.id}/`)
             .then(response => response.json())
@@ -338,54 +341,64 @@ export default class Round extends React.Component {
     render() {
         return <div>
             <h1>Round #{this.props.match.params.id}</h1>
-            {this.state.round &&
+            <div style={{display: 'flex', flexDirection: 'row', justifyContent: 'space-between'}}>
+                {this.state.round &&
+                    <div>
+                        <table>
+                            <tr>
+                                <td>
+                                    <b>Map</b>
+                                </td>
+                                <td>
+                                    <a href={`/maps/${this.state.round.map}/`}>{this.state.round.map}</a>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <b>Version</b>
+                                </td>
+                                <td>
+                                    {this.state.round.version}
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <b>Date</b>
+                                </td>
+                                <td>
+                                    {moment(this.state.round.started_at).format('LLLL')}
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <b>Duration</b>
+                                </td>
+                                <td>
+                                    {moment.duration(moment(this.state.round.ended_at).diff(moment(this.state.round.started_at))).format()}
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <b>Winner</b>
+                                </td>
+                                <td>
+                                    <TeamIcon teamIndex={this.state.round.winner}/> {this.getWinnerString(this.state.round.winner)}
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <b>Log ID</b>
+                                </td>
+                                <td>
+                                    {this.state.round.log.id}
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                }
                 <div>
-                    <table>
-                        <tr>
-                            <td>
-                                Map
-                            </td>
-                            <td>
-                                <a href={`/maps/${this.state.round.map}/`}>{this.state.round.map}</a>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>
-                                Version
-                            </td>
-                            <td>
-                                {this.state.round.version}
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>
-                                Date
-                            </td>
-                            <td>
-                                {moment(this.state.round.started_at).format('LLLL')}
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>
-                                Duration
-                            </td>
-                            <td>
-                                {
-                                    moment.duration(moment(this.state.round.ended_at).diff(moment(this.state.round.started_at))).humanize()
-                                }
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>
-                                Winner
-                            </td>
-                            <td>
-                                {this.getWinnerString(this.state.round.winner)}
-                            </td>
-                        </tr>
-                    </table>
                 </div>
-            }
+            </div>
             <h1>
                 Scoreboard
             </h1>
@@ -398,6 +411,12 @@ export default class Round extends React.Component {
             <RoundFragTable
                 roundId={this.props.match.params.id}
             />
+            <h1>
+                Communication
+            </h1>
+            {this.state.round &&
+                <Communication logId={this.state.round.log.id} />
+            }
         </div>
     }
 }
