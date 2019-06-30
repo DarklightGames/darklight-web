@@ -1,6 +1,7 @@
 import React from 'react'
 import api from './api.js'
 import ReactTable from 'react-table'
+import Select from 'react-select'
 import 'react-placeholder/lib/reactPlaceholder.css'
 import moment from 'moment'
 import RoundPlayerSummary from './RoundPlayerSummary'
@@ -201,6 +202,150 @@ class RoundFragTable extends React.Component {
     }
 }
 
+class RallyPointTable extends React.Component {
+
+    constructor(props) {
+        super(props)
+        this.state = {
+            data: [],
+            loading: false,
+            sorted: false,
+            filtered: false
+        }
+    }
+
+    requestData() {
+        this.setState({
+            loading: true,
+        })
+        return new Promise((resolve, reject) => {
+            api.get(`rally-points`, {
+                limit: 1000,
+                offset: 0,
+                round: this.props.roundId
+            }).then(response => response.json())
+                .then(data => {
+                    const res = {
+                        rows: data.results
+                    }
+                    resolve(res)
+                })
+        })
+    }
+
+    fetchData(state, instance) {
+        this.requestData().then(res => {
+            this.setState({
+                data: res.rows,
+                loading: false
+            })
+        })
+    }
+
+    componentWillMount() {
+        this.fetchData()
+    }
+
+    getUniquePlayers() {
+        let players = {}
+        this.state.data.forEach(x => {
+            if (!(x.player.id in players)) {
+                players[x.player.id] = x.player
+            }
+        })
+        let uniquePlayers =  Object.values(players).map(x => {
+            return { value: x.id, label: x.name }
+        })
+        console.log(uniquePlayers)
+        return uniquePlayers
+    }
+
+    render() {
+        return <div>
+            <ReactTable
+                getTheadFilterThProps={(state, rowInfo, column) => {
+                    return {
+                        style: { overflow: 'visible' }
+                    }
+                }}
+                defaultPageSize={10}
+                columns={[
+                    {
+                        Header: 'Team',
+                        accessor: 'team_index',
+                        filterable: false,
+                        Cell: row => (
+                            <TeamIcon teamIndex={row.value} />
+                        )
+                    },
+                    {
+                        Header: 'Player',
+                        accessor: 'player',
+                        filterMethod: (filter, row) => {
+                            return filter.value === null || row.player.id === filter.value.value
+                        },
+                        Filter: ({ filter, onChange }) => (
+                            <Select
+                                isClearable
+                                defaultValue={null}
+                                options={this.getUniquePlayers()}
+                                onChange={(value, action) => {
+                                    onChange(value)
+                                }}
+                            />
+                        ),
+                        sortMethod: (a, b, desc) => {
+                            return a.id < b.id
+                        },
+                        Cell: row => (
+                            <div>
+                                <a href={`/players/${row.value.id}`}>
+                                    {row.value.name}
+                                </a>
+                            </div>)
+                    },
+                    {
+                        Header: 'Squad',
+                        accessor: 'squad_index',
+                        filterable: false,
+                        Cell: row => (
+                            <div>{row.value + 1}</div>
+                        )
+                    },
+                    {
+                        id: 'spawn_count',
+                        Header: 'Spawns',
+                        accessor: 'spawn_count',
+                        filterable: false
+                    },
+                    {
+                        id: 'lifespan',
+                        Header: 'Lifespan',
+                        accessor: x => moment.duration(x.lifespan),
+                        filterable: false,
+                        Cell: row => (
+                            row.value.format()
+                        )
+                    },
+                    {
+                        Header: 'Destroyed By',
+                        accessor: 'destroyed_reason',
+                        filterable: false,
+                    },
+                ]}
+                // manual
+                filterable
+                sortable={true}
+                data={this.state.data}
+                loading={this.state.loading}
+                className="-striped -highlight"
+                showPaginationTop={true}
+                showPageSizeOptions={true}
+            />
+        </div>
+    }
+}
+
 
 class RoundScoreboardTable extends React.Component {
 
@@ -263,6 +408,9 @@ class RoundScoreboardTable extends React.Component {
                     {
                         Header: 'Name',
                         accessor: 'player',
+                        sortMethod: (a, b, desc) => {
+                            return a.id < b.id
+                        },
                         Cell: row => (
                             <div>
                                 <a href={`/players/${row.value.id}`}>
@@ -409,6 +557,12 @@ export default class Round extends React.Component {
                 Frags
             </h1>
             <RoundFragTable
+                roundId={this.props.match.params.id}
+            />
+            <h1>
+                Rally Points
+            </h1>
+            <RallyPointTable
                 roundId={this.props.match.params.id}
             />
             <h1>
