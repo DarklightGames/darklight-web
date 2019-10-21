@@ -55,6 +55,7 @@ class MapsTable extends React.Component {
 
     render() {
         return <div>
+            <h1>Maps</h1>
             <ReactTable
                 defaultPageSize={20}
                 columns={[

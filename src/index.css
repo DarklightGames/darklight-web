@@ -4,9 +4,10 @@ body {
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen",
     "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue",
     sans-serif;
+  font-size: 1rem;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  background-color: #fff;
+  background-color: #ffffff;
 }
 
 code {
@@ -14,11 +15,21 @@ code {
     monospace;
 }
 
+a {
+  text-decoration: none;
+  color: #0366d6;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
 header {
   background-color: #24292e;
 }
 
 header .container {
+  display: flex;
   max-width: 1012px;
   height: 42px;
   padding-top: 12px;
@@ -30,13 +41,16 @@ header .container {
 
 header ul li {
   float: left;
-  padding-left: 32px
+  padding-left: 32px;
 }
 
 header ul {
-  float: right;
+  display: flex;
   list-style: none;
-  font-size: 1em;
+  font-size: 14px;
+  margin-top: 0rem;
+  margin-bottom: 0rem;
+  align-items: center;
 }
 
 header ul li a {
@@ -52,7 +66,6 @@ header ul li a:hover {
 
 main .container {
   max-width: 1012px;
-  margin-top: 16px;
   margin-left: auto;
   margin-right: auto;
 }

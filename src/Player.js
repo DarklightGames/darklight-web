@@ -18,7 +18,7 @@ class PlayerSummary extends React.Component {
     }
 
     fetchData() {
-        api.get(`players/${this.props.playerId}/summary/`)
+        api.get(`players/${this.props.playerId}/stats/`)
         .then(response => response.json())
         .then(response => {
             this.setState({
@@ -33,7 +33,7 @@ class PlayerSummary extends React.Component {
                 <table>
                     <tr>
                         <td>
-                            Kills
+                            <b>Kills</b>
                         </td>
                         <td>
                             {this.state.data.kills}
@@ -41,7 +41,7 @@ class PlayerSummary extends React.Component {
                     </tr>
                     <tr>
                         <td>
-                            Deaths
+                            <b>Deaths</b>
                         </td>
                         <td>
                             {this.state.data.deaths}
@@ -49,7 +49,7 @@ class PlayerSummary extends React.Component {
                     </tr>
                     <tr>
                         <td>
-                            K:D Ratio
+                            <b>K:D Ratio</b>
                         </td>
                         <td>
                             {this.state.data.kd_ratio.toFixed(2)}
@@ -57,7 +57,7 @@ class PlayerSummary extends React.Component {
                     </tr>
                     <tr>
                         <td>
-                            FF Kills
+                            <b>FF Kills</b>
                         </td>
                         <td>
                             {this.state.data.ff_kills} ({(this.state.data.ff_kills / this.state.data.kills * 100).toFixed(2)}%)
@@ -65,7 +65,7 @@ class PlayerSummary extends React.Component {
                     </tr>
                     <tr>
                         <td>
-                            FF Deaths
+                            <b>FF Deaths</b>
                         </td>
                         <td>
                             {this.state.data.ff_deaths} ({(this.state.data.ff_deaths / this.state.data.deaths * 100).toFixed(2)}%)
@@ -73,10 +73,10 @@ class PlayerSummary extends React.Component {
                     </tr>
                     <tr>
                         <td>
-                            Total Playtime
+                            <b>Total Playtime</b>
                         </td>
                         <td>
-                            {moment.duration(this.state.data.total_playtime).humanize()}
+                            {moment.duration(this.state.data.playtime).humanize()}
                         </td>
                     </tr>
                 </table>
@@ -109,7 +109,7 @@ class PlayerSessionHeatmap extends React.Component {
     }
 
     render() {
-        return <div style={{flexShrink: 1}}>
+        return <div style={{flexShrink: 1, marginTop: 32}}>
         {/* TODO: different colorings for different lengths of play (<15 min, <1hr, <2hr) */}
             <CalendarHeatmap
                 // classForValue={(value) => value && moment.duration(value).minutes() > 15 ? {fill: '#ff00ff'} : {fill: '#ff0000'}}

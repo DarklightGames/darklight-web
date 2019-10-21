@@ -3,7 +3,6 @@ import ReactTable from 'react-table'
 import api from './api.js'
 import moment from 'moment'
 import AsyncSelect from 'react-select/lib/Async'
-import Select from 'react-select'
 import PropTypes from 'prop-types'
 import TeamIcon from './components/TeamIcon'
 
@@ -101,7 +100,7 @@ export default class RoundsTable extends React.Component {
                     style: { overflow: 'visible' }
                 }
             }}
-            filterable
+            filterable={false}
             defaultPageSize={this.props.defaultPageSize}
             columns={[
                 {
@@ -114,13 +113,11 @@ export default class RoundsTable extends React.Component {
                             </a>
                         </div>
                     ),
-                    filterable: false,
                     sortable: false,
                 },
                 {
                     Header: 'Version',
                     accessor: 'version',
-                    filterable: false,
                     sortable: false,
                 },
                 {
@@ -134,31 +131,12 @@ export default class RoundsTable extends React.Component {
                                 {row.value}
                             </a>
                         </div>
-                    ),
-                    Filter: ({ filter, onChange }) =>
-                        <AsyncSelect
-                            isDisabled={this.props.map != null}
-                            isClearable
-                            id='map_ids'
-                            cacheOptions
-                            loadOptions={mapOptions}
-                            // value={this.state.filter.map}
-                            onChange={(value, action) => {
-                                this.setState({
-                                    filter: {
-                                        map: value ? value.value : null
-                                    }
-                                }, () => {
-                                    onChange(value)
-                                })
-                            }}
-                        />
+                    )
                 },
                 {
                     Header: 'Date',
                     accessor: 'started_at',
                     width: 200,
-                    filterable: false,
                     sortable: false,
                     Cell: row => (
                         <div>
@@ -169,13 +147,11 @@ export default class RoundsTable extends React.Component {
                 {
                     Header: 'Players',
                     accessor: 'num_players',
-                    filterable: false,
                     sortable: false,
                 },
                 {
                     Header: 'Kills',
                     accessor: 'num_kills',
-                    filterable: false,
                     sortable: false,
                 },
                 {
@@ -184,7 +160,6 @@ export default class RoundsTable extends React.Component {
                     Cell: row => (
                         <TeamIcon teamIndex={row.value} />
                     ),
-                    filterable: false,
                     sortable: false,
                 }
             ]}
