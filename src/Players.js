@@ -49,6 +49,7 @@ class PlayersTable extends React.Component {
         ).then(res => {
             this.setState({
                 data: res.rows,
+                page: state.page,
                 pages: res.pages,
                 loading: false
             })
@@ -58,6 +59,15 @@ class PlayersTable extends React.Component {
     render() {
         return <AsyncReactTable
             columns={[
+                {
+                    Header: '#',
+                    width: 64,
+                    Cell: row => (
+                        <span>
+                            {this.state.page * this.state.pageSize + 1 + row.index}
+                        </span>
+                    )
+                },
                 {
                     Header: 'Name',
                     accessor: 'names',
@@ -72,11 +82,13 @@ class PlayersTable extends React.Component {
                 },
                 {
                     Header: 'K',
-                    accessor: 'kills'
+                    accessor: 'kills',
+                    width: 128,
                 },
                 {
                     Header: 'D',
-                    accessor: 'deaths'
+                    accessor: 'deaths',
+                    width: 128,
                 },
                 {
                     Header: 'K:D',
@@ -85,7 +97,8 @@ class PlayersTable extends React.Component {
                         <span>
                             {(row.original.kills / row.original.deaths).toFixed(2)}
                         </span>
-                    )
+                    ),
+                    width: 128,
                 },
                 {
                     Header: 'TK',
@@ -99,7 +112,8 @@ class PlayersTable extends React.Component {
                                 {(row.value / row.original.kills * 100.0).toFixed(2)}%
                             </span>
                         </div>
-                    )
+                    ),
+                    width: 128,
                 },
                 {
                     Header: 'Playtime',
@@ -119,11 +133,11 @@ class PlayersTable extends React.Component {
                     desc: true
                 }
             ]}
+            className="-striped -highlight"
             data={this.state.data}
             pages={this.state.pages}
             loading={this.state.loading}
             onFetchData={this.fetchData.bind(this)}
-            className="-striped -highlight"
             showPaginationTop={true}
             showPageSizeOptions={true}
             defaultPageSize={25}
